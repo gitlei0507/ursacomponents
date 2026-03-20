@@ -26,3 +26,13 @@ app.mount('#app')
 ```js
 import { UrsaSearch, UrsaTable, useUrsaSearch } from 'ursacomponents'
 ```
+
+路由工具按需引入：
+
+```js
+import {
+	createUrsaMenuRouterToolkit,
+	getUrsaMenuIcon,
+	setupUrsaRouterGuard
+} from 'ursacomponents'
+```
