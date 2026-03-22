@@ -8,6 +8,7 @@ import UrsaTagsView from './components/UrsaTagsView/UrsaTagsView.vue'
 export { useUrsaMenu } from './components/UrsaMenu/useUrsaMenu'
 export { useUrsaMenuItem } from './components/UrsaMenu/useUrsaMenuItem'
 export { useUrsaSearch } from './components/UrsaSearch/useUrsaSearch'
+export { useUrsaTable } from './components/UrsaTable/useUrsaTable'
 // 路由工具按需导出。
 export { buildMenuTree, createUrsaMenuRouterToolkit, flattenMenus, getFirstMenuPath, getUrsaMenuIcon, setupUrsaRouterGuard } from './router/index'
 // 组件按需导出。
