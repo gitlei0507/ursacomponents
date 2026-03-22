@@ -40,6 +40,11 @@ export const createUrsaMenuRouterToolkit = (options = {}) => {
         }
 
         const routes = buildRoutesFromMenus(menus)
+        console.log('##', routes);
+
+        if (debug) {
+            console.log('routes', routes)
+        }
 
         routes.forEach((route) => {
             // 无名称路由无法用于去重判断，直接跳过。
