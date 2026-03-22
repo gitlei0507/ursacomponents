@@ -2,6 +2,7 @@ import UrsaMenu from './components/UrsaMenu/UrsaMenu.vue'
 import UrsaMenuItem from './components/UrsaMenu/UrsaMenuItem.vue'
 import UrsaSearch from './components/UrsaSearch/UrsaSearch.vue'
 import UrsaTable from './components/UrsaTable/UrsaTable.vue'
+import UrsaTagsView from './components/UrsaTagsView/UrsaTagsView.vue'
 
 // 组合式能力按需导出。
 export { useUrsaMenu } from './components/UrsaMenu/useUrsaMenu'
@@ -10,10 +11,10 @@ export { useUrsaSearch } from './components/UrsaSearch/useUrsaSearch'
 // 路由工具按需导出。
 export { buildMenuTree, createUrsaMenuRouterToolkit, flattenMenus, getFirstMenuPath, getUrsaMenuIcon, setupUrsaRouterGuard } from './router/index'
 // 组件按需导出。
-export { UrsaMenu, UrsaMenuItem, UrsaSearch, UrsaTable }
+export { UrsaMenu, UrsaMenuItem, UrsaSearch, UrsaTable, UrsaTagsView }
 
 // 全量安装时需要注册的组件列表。
-const components = [UrsaSearch, UrsaTable, UrsaMenu, UrsaMenuItem]
+const components = [UrsaSearch, UrsaTable, UrsaMenu, UrsaMenuItem, UrsaTagsView]
 
 // Vue 插件安装入口：一次性注册所有组件。
 const install = (app) => {
