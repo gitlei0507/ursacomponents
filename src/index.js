@@ -4,7 +4,7 @@ import UrsaTable from './components/UrsaTable/UrsaTable.vue'
 // 组合式能力按需导出。
 export { useUrsaSearch } from './components/UrsaSearch/useUrsaSearch'
 // 路由工具按需导出。
-export { createUrsaMenuRouterToolkit, flattenMenus, getFirstMenuPath, getUrsaMenuIcon, setupUrsaRouterGuard } from './router/index'
+export { buildMenuTree, createUrsaMenuRouterToolkit, flattenMenus, getFirstMenuPath, getUrsaMenuIcon, setupUrsaRouterGuard } from './router/index'
 // 组件按需导出。
 export { UrsaSearch, UrsaTable }
 

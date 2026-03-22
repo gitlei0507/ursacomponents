@@ -5,7 +5,7 @@ export { setupUrsaRouterGuard } from './modules/guard'
 export { getUrsaMenuIcon } from './modules/icon'
 
 // 菜单工具：提供菜单拍平和首个可访问菜单路径获取能力。
-export { flattenMenus, getFirstMenuPath } from './modules/menu'
+export { buildMenuTree, flattenMenus, getFirstMenuPath } from './modules/menu'
 
 // 路径标准化：统一菜单组件路径格式，保证与 viewModules 的 key 匹配。
 export { normalizeViewPath } from './modules/path'
