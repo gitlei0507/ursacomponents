@@ -16,9 +16,30 @@
                 </template>
 
                 <template v-else>
-                    <el-table-column v-for="column in columnFields" :prop="column.prop" :label="column.label"
-                        :width="column.width ?? 200" :align="column.align ?? 'center'"
-                        :sortable="column.sortable ?? 'custom'" />
+                    <el-table-column v-for="column in columnFields" :key="column.prop || column.label"
+                        :prop="column.prop" :label="column.label" :width="column.width ?? 200"
+                        :min-width="column.minWidth" :align="column.align ?? 'center'"
+                        :sortable="column.sortable ?? 'custom'" :fixed="column.fixed"
+                        :show-overflow-tooltip="column.showOverflowTooltip ?? false">
+                        <template #default="scope">
+                            <slot v-if="hasColumnSlot(column)" :name="getColumnSlotName(column)" :row="scope.row"
+                                :index="scope.$index" :column="column" :value="getCellValue(scope.row, column)"></slot>
+
+                            <template v-else-if="hasTagStyle(column)">
+                                <el-tag v-if="resolveTagConfig(column, scope.row, scope.$index)"
+                                    :type="resolveTagConfig(column, scope.row, scope.$index).type"
+                                    :effect="resolveTagConfig(column, scope.row, scope.$index).effect"
+                                    :size="resolveTagConfig(column, scope.row, scope.$index).size"
+                                    :round="resolveTagConfig(column, scope.row, scope.$index).round"
+                                    :hit="resolveTagConfig(column, scope.row, scope.$index).hit">
+                                    {{ resolveTagConfig(column, scope.row, scope.$index).label }}
+                                </el-tag>
+                                <span v-else>{{ formatCellText(column, scope.row, scope.$index) }}</span>
+                            </template>
+
+                            <span v-else>{{ formatCellText(column, scope.row, scope.$index) }}</span>
+                        </template>
+                    </el-table-column>
                 </template>
 
                 <!-- 操作区域 -->
@@ -173,6 +194,68 @@
     const handleCurrentChange = (page) => emit('current-change', page)
     const handleSizeChange = (size) => emit('size-change', size)
     const handleSelectionChange = (rows) => emit('selection-change', rows)
+
+    const getCellValue = (row, column) => {
+        if (!column?.prop) {
+            return undefined
+        }
+        return row?.[column.prop]
+    }
+
+    const formatCellText = (column, row, index) => {
+        const value = getCellValue(row, column)
+        if (typeof column?.formatter === 'function') {
+            return column.formatter({ value, row, index, column })
+        }
+        return value ?? ''
+    }
+
+    const getColumnSlotName = (column) => column?.slot || (column?.prop ? `col-${column.prop}` : '')
+
+    const hasColumnSlot = (column) => {
+        const slotName = getColumnSlotName(column)
+        return Boolean(slotName && $slots[slotName])
+    }
+
+    const hasTagStyle = (column) => {
+        return typeof column?.tagMap === 'function' || typeof column?.tagMap === 'object'
+    }
+
+    const normalizeTagConfig = (rawConfig, fallbackLabel) => {
+        if (!rawConfig) {
+            return null
+        }
+        if (typeof rawConfig === 'string') {
+            return { label: rawConfig }
+        }
+        return {
+            label: rawConfig.label ?? fallbackLabel,
+            type: rawConfig.type,
+            effect: rawConfig.effect,
+            size: rawConfig.size,
+            round: rawConfig.round,
+            hit: rawConfig.hit
+        }
+    }
+
+    const resolveTagConfig = (column, row, index) => {
+        const value = getCellValue(row, column)
+        let tagConfig = null
+
+        if (typeof column?.tagMap === 'function') {
+            tagConfig = column.tagMap({ value, row, index, column })
+        } else if (column?.tagMap && typeof column.tagMap === 'object') {
+            tagConfig = column.tagMap[value]
+        }
+
+        if (!tagConfig && typeof column?.tagDefault === 'function') {
+            tagConfig = column.tagDefault({ value, row, index, column })
+        } else if (!tagConfig) {
+            tagConfig = column?.tagDefault
+        }
+
+        return normalizeTagConfig(tagConfig, value)
+    }
 
     const isActionVisible = (button, row, index) => {
         if (typeof button.visible === 'function') {
