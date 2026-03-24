@@ -11,7 +11,29 @@
                     :index="calcIndex" />
                 <el-table-column v-if="showSelection" type="selection" :width="selectionWidth" align="center" />
 
-                <slot />
+                <template v-if="!Array.isArray(columnFields) || columnFields.length === 0">
+                    <slot />
+                </template>
+
+                <template v-else>
+                    <el-table-column v-for="column in columnFields" :prop="column.prop" :label="column.label"
+                        :width="column.width ?? 200" :align="column.align ?? 'center'"
+                        :sortable="column.sortable ?? 'custom'" />
+                </template>
+
+                <!-- 操作区域 -->
+                <el-table-column v-if="showActionColumn" :label="resolvedActionColumn.label"
+                    :width="resolvedActionColumn.width" :align="resolvedActionColumn.align"
+                    :fixed="resolvedActionColumn.fixed">
+                    <template #default="scope">
+                        <el-button v-for="button in resolvedActionButtons" :key="button.key"
+                            v-if="isActionVisible(button, scope.row, scope.$index)" :link="button.link ?? true"
+                            :type="button.type ?? 'primary'" :size="button.size ?? 'small'" :icon="button.icon"
+                            @click="handleActionClick(button, scope)">
+                            {{ button.label }}
+                        </el-button>
+                    </template>
+                </el-table-column>
             </el-table>
         </div>
 
@@ -26,12 +48,19 @@
 </template>
 
 <script setup>
+    import { Delete, Edit, View } from '@element-plus/icons-vue'
+    import { computed } from 'vue'
+
     defineOptions({
         name: 'UrsaTable'
     })
 
     const props = defineProps({
         data: {
+            type: Array,
+            default: () => []
+        },
+        columnFields: {
             type: Array,
             default: () => []
         },
@@ -78,10 +107,65 @@
         selectionWidth: {
             type: Number,
             default: 55
+        },
+        showActionColumn: {
+            type: Boolean,
+            default: false
+        },
+        actionColumn: {
+            type: Object,
+            default: () => ({})
         }
     })
 
-    const emit = defineEmits(['sort-change', 'current-change', 'size-change', 'selection-change'])
+    const emit = defineEmits((event) => {
+        return typeof event === 'string'
+    })
+
+    const defaultActionButtons = [
+        {
+            key: 'view',
+            label: '查看',
+            type: 'info',
+            size: 'small',
+            link: true,
+            icon: View,
+            event: 'view'
+        },
+        {
+            key: 'edit',
+            label: '编辑',
+            type: 'primary',
+            size: 'small',
+            link: true,
+            icon: Edit,
+            event: 'edit'
+        },
+        {
+            key: 'delete',
+            label: '删除',
+            type: 'danger',
+            size: 'small',
+            link: true,
+            icon: Delete,
+            event: 'delete'
+        }
+    ]
+
+    const resolvedActionColumn = computed(() => ({
+        label: props.actionColumn?.label ?? '操作',
+        width: props.actionColumn?.width ?? 240,
+        align: props.actionColumn?.align ?? 'center',
+        fixed: props.actionColumn?.fixed ?? 'right'
+    }))
+
+    const resolvedActionButtons = computed(() => {
+        const configButtons = props.actionColumn?.buttons
+        if (Array.isArray(configButtons) && configButtons.length > 0) {
+            return configButtons
+        }
+        return defaultActionButtons
+    })
 
     const calcIndex = (index) => (props.currentPage - 1) * props.pageSize + index + 1
 
@@ -89,6 +173,33 @@
     const handleCurrentChange = (page) => emit('current-change', page)
     const handleSizeChange = (size) => emit('size-change', size)
     const handleSelectionChange = (rows) => emit('selection-change', rows)
+
+    const isActionVisible = (button, row, index) => {
+        if (typeof button.visible === 'function') {
+            return button.visible({ row, index })
+        }
+        if (typeof button.visible === 'boolean') {
+            return button.visible
+        }
+        return true
+    }
+
+    const handleActionClick = (button, scope) => {
+        const payload = {
+            action: button.key ?? button.event ?? 'action',
+            row: scope.row,
+            index: scope.$index,
+            button
+        }
+
+        if (typeof button.onClick === 'function') {
+            button.onClick(payload)
+            return
+        }
+
+        emit('action', payload)
+        emit(button.event ?? button.key ?? 'action', payload)
+    }
 </script>
 
 <style scoped>
