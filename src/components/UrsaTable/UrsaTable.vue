@@ -17,7 +17,7 @@
 
                 <template v-else>
                     <el-table-column v-for="column in columnFields" :key="column.prop || column.label"
-                        :prop="column.prop" :label="column.label" :width="column.width ?? 200"
+                        :prop="column.prop" :label="column.label" :width="column.width ?? undefined"
                         :min-width="column.minWidth" :align="column.align ?? 'center'"
                         :sortable="column.sortable ?? 'custom'" :fixed="column.fixed"
                         :show-overflow-tooltip="column.showOverflowTooltip ?? false">
@@ -47,12 +47,15 @@
                     :width="resolvedActionColumn.width" :align="resolvedActionColumn.align"
                     :fixed="resolvedActionColumn.fixed">
                     <template #default="scope">
-                        <el-button v-for="button in resolvedActionButtons" :key="button.key"
-                            v-if="isActionVisible(button, scope.row, scope.$index)" :link="button.link ?? true"
-                            :type="button.type ?? 'primary'" :size="button.size ?? 'small'" :icon="button.icon"
-                            @click="handleActionClick(button, scope)">
-                            {{ button.label }}
-                        </el-button>
+                        <template v-for="button in resolvedActionButtons"
+                            :key="button.key ?? button.event ?? button.label">
+                            <el-button v-if="isActionVisible(button, scope.row, scope.$index)"
+                                :link="button.link ?? true" :type="button.type ?? 'primary'"
+                                :size="button.size ?? 'small'" :icon="button.icon"
+                                @click="handleActionClick(button, scope)">
+                                {{ button.label }}
+                            </el-button>
+                        </template>
                     </template>
                 </el-table-column>
             </el-table>
@@ -71,7 +74,7 @@
 
 <script setup>
     import { Delete, Edit, View } from '@element-plus/icons-vue'
-    import { computed } from 'vue'
+    import { computed, useSlots } from 'vue'
 
     defineOptions({
         name: 'UrsaTable'
@@ -144,6 +147,8 @@
         return typeof event === 'string'
     })
 
+    const slots = useSlots()
+
     const defaultActionButtons = [
         {
             key: 'view',
@@ -215,7 +220,7 @@
 
     const hasColumnSlot = (column) => {
         const slotName = getColumnSlotName(column)
-        return Boolean(slotName && $slots[slotName])
+        return Boolean(slotName && slots[slotName])
     }
 
     const hasTagStyle = (column) => {
@@ -259,6 +264,9 @@
     }
 
     const isActionVisible = (button, row, index) => {
+        if (!button || typeof button !== 'object') {
+            return false
+        }
         if (typeof button.visible === 'function') {
             return button.visible({ row, index })
         }
