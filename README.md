@@ -36,3 +36,16 @@ import {
 	setupUrsaRouterGuard
 } from 'ursacomponents'
 ```
+
+## 文档开发
+
+```bash
+# 本地启动文档
+npm run docs:dev
+
+# 构建文档
+npm run docs:build
+
+# 预览构建产物
+npm run docs:preview
+```
