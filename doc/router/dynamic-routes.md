@@ -6,177 +6,42 @@
 
 在后台管理系统中，菜单通常由后端返回。需要把菜单数据转换为 Vue Router 可识别的路由记录，并在登录后按需注入。
 
-`ursacomponents` 提供了一整套工具：
+## 2. 整体流程
 
-1. `createViewResolver`：把菜单里的组件路径字符串映射为页面组件。
-2. `createMenuRouteMapper`：把单个菜单节点映射成路由对象。
-3. `createUrsaMenuRouterToolkit`：整合拍平、映射、注入能力。
-4. `setupUrsaRouterGuard`：在前置守卫中完成登录校验和动态路由初始化。
+整个基于核心工具集（Toolkit）的路由生成与调用流程，可以划分为四个核心阶段：静态初始化、用户登录、守卫拦截、以及动态注入。以下是完整的调用流程分析：
 
-## 2. 菜单数据约定
+1. 静态初始化阶段 (项目启动) 在项目初始化阶段，系统会准备好所有需要的“原材料”并挂载基础环境：
+   扫描组件： 在 `dynamic-routes.js` 中，通过 Vite 的 `import.meta.glob` 扫描并获取 views 目录下所有的页面组件资源（懒加载函数集 `viewModules`）
+   。
+   实例化工具箱： 将 `viewModules` 等配置传入 `createUrsaMenuRouterToolkit`，生成并导出核心的方法 `buildRoutesFromMenus` 和 `initDynamicRoutes`
+   。
+   注册静态路由与守卫： 在 `index.js` 中，首先创建包含 `/login` 和布局页 / 等基础页面的静态路由实例
+   。随后，调用 `setupUrsaRouterGuard` 设置前置路由守卫，并将上一步生成的 `initDynamicRoutes` 注入到守卫的配置中
+   。
+2. 用户登录与状态存储阶段 (认证流) 当用户访问登录页并提交凭证时，触发认证与数据初始化流程：
+   获取权限与数据： 在 `useLogin` 中，调用 login API 获取认证信息后，通过 setToken 保存 Token，并通过 `useUserStore` 的 `setUserInfo` 将包含用户菜单树（menus）在内的基本信息存入 Pinia 状态库
+   。
+   路由重定向： 登录成功后，可以通过工具箱提供的 `getFirstMenuPath` 工具（带有 `/dashboard` 兜底），从用户的菜单数据中解析出首个可访问的菜单路径，并重定向到该页面
+   。
+3. 路由守卫拦截阶段 (导航流) 当页面发生跳转（例如登录后的重定向）时，`setupUrsaRouterGuard` 注册的前置路由守卫会拦截此次导航：
+   登录校验： 守卫首先通过传入的 `getToken` 检查用户是否已登录
+   。
+   加载状态判断： 如果已登录，守卫会通过 `getUserStore` 获取用户信息，并调用 `hasLoadedRoutes`（默认读取 `store.hasLoadedAsyncRoutes` 标记）判断当前是否已经加载过动态路由
+   。
+   触发动态加载： 如果标记为未加载，守卫则会从 `store` 中读取用户菜单列表（`getMenus`），并调用由外部传入的 `initDynamicRoutes` 开启路由的动态生成过程
+   。
+4. 动态解析与注入阶段 (内部处理流) 这是 Toolkit 发挥“核心调度”作用的阶段，由 `initDynamicRoutes` 在内部完成复杂的流水线作业：
+   数据拍平： 调用 `flattenMenus` 将从服务端获取的树形菜单数据拍平为一维数组，方便后续逐一映射
+   。
+   路径解析： 针对每一个菜单项，通过 `normalizeViewPath` 统一处理组件路径格式（例如自动补齐 .vue 后缀、去除多余斜杠）
+   。
+   组件匹配： 利用 `createViewResolver`，将处理后的路径与阶段一中扫描的 `viewModules` 键值进行精确匹配，提取出对应的页面组件模块
+   。
+   路由映射与注册： `createMenuRouteMapper` 负责将拼装好的路径和组件转换为 Vue Router 能够识别的路由对象
+   ，并动态添加到 Router 实例中。
+   状态闭环： 路由注入完成后，守卫会调用 `setLoadedRoutes`（默认执行 store 的 `setHasLoadedAsyncRoutes` 方法）将加载状态标记为 `true`
+   。至此，流程闭环，放行用户的路由访问请求。
 
-菜单节点至少需要：
+   ## 3. 流程图
 
-1. `path`：路由路径。
-2. `component`：页面组件路径（相对 `viewsDir`）。
-
-推荐字段：
-
-1. `name`：路由名称。
-2. `menu_name` 或 `title`：菜单标题。
-3. `icon`：菜单图标。
-4. `children`：子菜单。
-5. `hidden`：是否隐藏。
-
-示例：
-
-```json
-[
-  {
-    "id": 10,
-    "parent_id": 0,
-    "path": "/dashboard",
-    "name": "dashboard",
-    "menu_name": "首页",
-    "component": "dashboard/index",
-    "icon": "House"
-  },
-  {
-    "id": 20,
-    "parent_id": 0,
-    "path": "/system",
-    "menu_name": "系统管理",
-    "component": "system/index",
-    "children": [
-      {
-        "id": 21,
-        "parent_id": 20,
-        "path": "user",
-        "menu_name": "用户管理",
-        "component": "system/user/index",
-        "icon": "User"
-      }
-    ]
-  }
-]
-```
-
-## 3. 生成流程（从菜单到路由）
-
-<ImagePreview src="./image/从菜单到路由生成流程.png" alt="从菜单到路由生成流程" />
-
-关键点：
-
-1. `normalizeViewPath` 会自动补 `.vue` 后缀。
-2. `createMenuRouteMapper` 会把绝对路径转换为相对路径后再挂到父路由下。
-3. 默认父路由名是 `layout`，若根布局路由名称不同，需要显式传入。
-
-## 4. 在项目中接入
-
-### 4.1 创建工具箱
-
-```js
-import { createUrsaMenuRouterToolkit } from "ursacomponents";
-
-// key 的形式如：/src/views/system/user/index.vue
-const viewModules = import.meta.glob("/src/views/**/*.vue");
-
-export const ursaDynamicToolkit = createUrsaMenuRouterToolkit({
-  viewModules,
-  viewsDir: "/src/views",
-  debug: import.meta.env.DEV,
-});
-```
-
-### 4.2 在路由守卫中初始化动态路由
-
-```js
-// src/router/guard.js
-import { setupUrsaRouterGuard } from "ursacomponents";
-import router from "./index";
-import { ursaDynamicToolkit } from "./dynamic-toolkit";
-import { useUserStore } from "@/store/modules/user";
-
-setupUrsaRouterGuard(router, {
-  getToken: () => localStorage.getItem("token"),
-  loginPath: "/login",
-  getUserStore: () => useUserStore(),
-  getMenus: (store) => store.userInfo?.menus || [],
-  hasLoadedRoutes: (store) => Boolean(store.hasLoadedAsyncRoutes),
-  setLoadedRoutes: (store, loaded) => store.setHasLoadedAsyncRoutes(loaded),
-  initDynamicRoutes: (routerInstance, menus) =>
-    ursaDynamicToolkit.initDynamicRoutes(routerInstance, menus, {
-      // 与 layout 根路由 name 保持一致
-      parentRouteName: "layout",
-    }),
-  onMissingMenus: () => "/login",
-  debug: import.meta.env.DEV,
-});
-```
-
-### 4.3 Store 最小约定
-
-`setupUrsaRouterGuard` 默认读取下列结构，可以保持一致，也可以在参数里改成自定义读取方式。
-
-```js
-// 仅示意
-state: () => ({
-	userInfo: {
-		menus: []
-	},
-	hasLoadedAsyncRoutes: false
-}),
-actions: {
-	setHasLoadedAsyncRoutes(loaded) {
-		this.hasLoadedAsyncRoutes = loaded
-	}
-}
-```
-
-## 5. 首次登录到页面
-
-1. 用户访问业务页，进入 `beforeEach`。
-2. 无 token 跳转 `/login`；有 token 则继续。
-3. 判定是否需要加载动态路由。
-4. 从 store 读取菜单，调用 `initDynamicRoutes`。
-5. 动态路由注入完成后执行 `next({ ...to, replace: true })`。
-6. 重新进入目标页，此时路由已存在，页面正常渲染。
-
-## 6. 常见问题与排查
-
-### 6.1 提示“未找到组件”
-
-排查顺序：
-
-1. `menu.component` 是否与 `viewsDir` 相同。
-2. `import.meta.glob` 的匹配范围是否覆盖目标页面。
-3. 组件路径是否拼写错误，是否缺少目录层级。
-
-建议先打开 `debug: true`，查看工具打印的“尝试加载组件”日志。
-
-### 6.2 动态路由重复注册
-
-工具内部会基于路由 `name` + `router.hasRoute(name)` 去重。
-
-建议：
-
-1. 后端返回稳定的 `name`。
-2. 若未提供 `name`，确保 `path` 唯一，避免 fallback name 冲突。
-
-### 6.3 页面刷新后 404
-
-通常是“刷新后守卫未及时注入动态路由”或“服务端未配置 history fallback”。
-
-建议：
-
-1. 确认刷新时会触发 `setupUrsaRouterGuard`。
-2. 确认菜单在守卫执行时可拿到。
-3. 部署端开启 SPA 回退到 `index.html`。
-
-## 7. 与 UrsaMenu 的配合建议
-
-1. 路由侧使用同一份后端菜单数据生成动态路由。
-2. 菜单侧将同一份数据直接传给 `UrsaMenu`。
-3. `UrsaMenu` 组件设置 `:router="true"` 时，点击菜单会走路由跳转。
-
-这样可以保证“菜单可见项”和“真实可访问路由”一致，降低维护成本。
+<ImagePreview src='./image/基于核心工具集Toolkit的路由生成与调用流程.png' alt='基于核心工具集Toolkit的路由生成与调用流程' />
