@@ -25,6 +25,13 @@ export default defineConfig({
               { text: 'UrsaMenu', link: '/components/UrsaMenu/UrsaMenu' },
               { text: 'UrsaTagsView', link: '/components/UrsaTagsView/UrsaTagsView' },
             ]
+          },
+          {
+            text: '路由',
+            collapsed: false,
+            items: [
+              { text: '动态路由', link: '/router/dynamic-routes'}
+            ]
           }
         ]
       }
