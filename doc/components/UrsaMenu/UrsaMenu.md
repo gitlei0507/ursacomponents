@@ -15,8 +15,6 @@ const loadBaseUrsaMenuSource = async () => (await import('./BaseUrsaMenu.vue?raw
 
 <SourceCodeViewer :load-source="loadBaseUrsaMenuSource" language="vue" />
 
-示例源码：`doc/components/UrsaMenu/BaseUrsaMenu.vue`
-
 ## Props
 
 | 参数            | 说明                           | 类型       | 默认值         |
