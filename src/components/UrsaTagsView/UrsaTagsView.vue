@@ -9,8 +9,8 @@
 </template>
 
 <script setup>
-    import { computed, ref, watch } from 'vue'
-    import { useRoute, useRouter } from 'vue-router'
+    import { computed, inject, ref, watch } from 'vue'
+    import { routeLocationKey, routerKey } from 'vue-router'
 
     defineOptions({
         name: 'UrsaTagsView'
@@ -27,13 +27,15 @@
         }
     })
 
-    const route = useRoute()
-    const router = useRouter()
+    // 无 router 场景（如文档示例）下注入结果为 null，组件自动降级为静态标签展示。
+    const route = inject(routeLocationKey, null)
+    const router = inject(routerKey, null)
+    const hasRouter = computed(() => Boolean(route && router))
 
     const tabs = ref([])
 
     const activeTab = computed({
-        get: () => route.path,
+        get: () => (hasRouter.value ? route.path : (tabs.value[0]?.path || props.homePath)),
         set: (val) => val
     })
 
@@ -48,13 +50,12 @@
         if (existed) {
             return
         }
-
-        const homeRoute = router.resolve(props.homePath)
+        const homeRoute = hasRouter.value ? router.resolve(props.homePath) : null
         tabs.value.unshift(
             createTab({
                 path: props.homePath,
-                meta: { title: homeRoute.meta?.title || props.homeTitle },
-                name: homeRoute.name || props.homeTitle
+                meta: { title: homeRoute?.meta?.title || props.homeTitle },
+                name: homeRoute?.name || props.homeTitle
             })
         )
     }
@@ -71,6 +72,9 @@
     }
 
     const handleTabClick = (tabPane) => {
+        if (!hasRouter.value) {
+            return
+        }
         const targetPath = tabPane?.props?.name
         if (targetPath && targetPath !== route.path) {
             router.push(targetPath)
@@ -85,7 +89,7 @@
 
         tabs.value.splice(currentIndex, 1)
 
-        if (route.path !== targetPath) {
+        if (!hasRouter.value || route.path !== targetPath) {
             return
         }
 
@@ -95,10 +99,12 @@
     }
 
     watch(
-        () => route.path,
+        () => (hasRouter.value ? route.path : '__no_router__'),
         () => {
             ensureHomeTab()
-            addTabIfNotExists(route)
+            if (hasRouter.value) {
+                addTabIfNotExists(route)
+            }
         },
         { immediate: true }
     )
