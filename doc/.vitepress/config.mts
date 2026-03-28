@@ -22,7 +22,7 @@ export default defineConfig({
             text: '组件',
             collapsed: false,
             items: [
-              { text: 'UrsaMenu 菜单组件', link: '/components/basic/UrsaMenu' },
+              { text: 'UrsaMenu 菜单组件', link: '/components/UrsaMenu/UrsaMenu' },
             ]
           }
         ]

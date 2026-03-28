@@ -7,7 +7,7 @@ const groups = [
   {
     title: '组件',
     items: [
-      { name: 'UrsaMenu', desc: '菜单组件', link: '/components/basic/UrsaMenu' },
+      { name: 'UrsaMenu', desc: '菜单组件', link: '/components/UrsaMenu/UrsaMenu' },
     ]
   }
 ]

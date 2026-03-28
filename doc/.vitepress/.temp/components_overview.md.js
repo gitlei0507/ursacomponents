@@ -11,7 +11,7 @@ const _sfc_main = /* @__PURE__ */ Object.assign(__default__, {
       {
         title: "组件",
         items: [
-          { name: "UrsaMenu", desc: "菜单组件", link: "/components/basic/UrsaMenu" }
+          { name: "UrsaMenu", desc: "菜单组件", link: "/components/UrsaMenu/UrsaMenu" }
         ]
       }
     ];
@@ -28,23 +28,23 @@ const _sfc_main = /* @__PURE__ */ Object.assign(__default__, {
     });
     const total = computed(() => filteredGroups.value.reduce((sum, group) => sum + group.items.length, 0));
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(_attrs)} data-v-068da82c><h1 id="组件总览" tabindex="-1" data-v-068da82c>组件总览 <a class="header-anchor" href="#组件总览" aria-label="Permalink to &quot;组件总览&quot;" data-v-068da82c>​</a></h1><p data-v-068da82c>以下是 Ursa Components 当前文档中的组件目录。</p><input${ssrRenderAttr("value", keyword.value)} class="overview-search" type="text" placeholder="Search Components" data-v-068da82c>`);
+      _push(`<div${ssrRenderAttrs(_attrs)} data-v-0f52bb40><h1 id="组件总览" tabindex="-1" data-v-0f52bb40>组件总览 <a class="header-anchor" href="#组件总览" aria-label="Permalink to &quot;组件总览&quot;" data-v-0f52bb40>​</a></h1><p data-v-0f52bb40>以下是 Ursa Components 当前文档中的组件目录。</p><input${ssrRenderAttr("value", keyword.value)} class="overview-search" type="text" placeholder="Search Components" data-v-0f52bb40>`);
       if (total.value === 0) {
-        _push(`<div class="overview-empty" data-v-068da82c>未找到匹配组件，请尝试其他关键字。</div>`);
+        _push(`<div class="overview-empty" data-v-0f52bb40>未找到匹配组件，请尝试其他关键字。</div>`);
       } else {
         _push(`<!---->`);
       }
       _push(`<!--[-->`);
       ssrRenderList(filteredGroups.value, (group) => {
-        _push(`<section class="overview-group" data-v-068da82c><div class="overview-group-header" data-v-068da82c><h2 data-v-068da82c>${ssrInterpolate(group.title)}</h2><span class="overview-count" data-v-068da82c>${ssrInterpolate(group.items.length)}</span></div><div class="overview-grid" data-v-068da82c><!--[-->`);
+        _push(`<section class="overview-group" data-v-0f52bb40><div class="overview-group-header" data-v-0f52bb40><h2 data-v-0f52bb40>${ssrInterpolate(group.title)}</h2><span class="overview-count" data-v-0f52bb40>${ssrInterpolate(group.items.length)}</span></div><div class="overview-grid" data-v-0f52bb40><!--[-->`);
         ssrRenderList(group.items, (item) => {
-          _push(`<a${ssrRenderAttr("href", item.link)} class="overview-card" data-v-068da82c><div class="overview-card-head" data-v-068da82c><span data-v-068da82c>${ssrInterpolate(item.name)}</span>`);
+          _push(`<a${ssrRenderAttr("href", item.link)} class="overview-card" data-v-0f52bb40><div class="overview-card-head" data-v-0f52bb40><span data-v-0f52bb40>${ssrInterpolate(item.name)}</span>`);
           if (item.version) {
-            _push(`<span class="overview-version" data-v-068da82c>${ssrInterpolate(item.version)}</span>`);
+            _push(`<span class="overview-version" data-v-0f52bb40>${ssrInterpolate(item.version)}</span>`);
           } else {
             _push(`<!---->`);
           }
-          _push(`</div><div class="overview-card-body" data-v-068da82c>${ssrInterpolate(item.desc)}</div></a>`);
+          _push(`</div><div class="overview-card-body" data-v-0f52bb40>${ssrInterpolate(item.desc)}</div></a>`);
         });
         _push(`<!--]--></div></section>`);
       });
@@ -58,7 +58,7 @@ _sfc_main.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/overview.md");
   return _sfc_setup ? _sfc_setup(props, ctx) : void 0;
 };
-const overview = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-068da82c"]]);
+const overview = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-0f52bb40"]]);
 export {
   __pageData,
   overview as default
