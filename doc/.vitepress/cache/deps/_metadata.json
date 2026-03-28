@@ -1,43 +1,85 @@
 {
-  "hash": "06e15872",
+  "hash": "0bb680d1",
   "configHash": "d5fba758",
-  "lockfileHash": "8039393e",
-  "browserHash": "7fa971e2",
+  "lockfileHash": "8bac0659",
+  "browserHash": "04b22fb3",
   "optimized": {
     "vue": {
       "src": "../../../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
       "file": "vue.js",
-      "fileHash": "222758f7",
+      "fileHash": "6bf35ec8",
       "needsInterop": false
     },
     "vitepress > @vue/devtools-api": {
       "src": "../../../../node_modules/vitepress/node_modules/@vue/devtools-api/dist/index.js",
       "file": "vitepress___@vue_devtools-api.js",
-      "fileHash": "528e4897",
+      "fileHash": "47302570",
       "needsInterop": false
     },
     "vitepress > @vueuse/core": {
       "src": "../../../../node_modules/vitepress/node_modules/@vueuse/core/index.mjs",
       "file": "vitepress___@vueuse_core.js",
-      "fileHash": "eeaf7347",
+      "fileHash": "fb7d28d6",
       "needsInterop": false
     },
     "element-plus": {
       "src": "../../../../node_modules/element-plus/es/index.mjs",
       "file": "element-plus.js",
-      "fileHash": "6b02c08d",
+      "fileHash": "1a9282cd",
       "needsInterop": false
     },
     "@element-plus/icons-vue": {
       "src": "../../../../node_modules/@element-plus/icons-vue/dist/index.js",
       "file": "@element-plus_icons-vue.js",
-      "fileHash": "e98f3e4f",
+      "fileHash": "751a3f25",
       "needsInterop": false
     },
     "vue-router": {
       "src": "../../../../node_modules/vue-router/dist/vue-router.mjs",
       "file": "vue-router.js",
-      "fileHash": "5e08526c",
+      "fileHash": "a0ba8323",
+      "needsInterop": false
+    },
+    "highlight.js/lib/core": {
+      "src": "../../../../node_modules/highlight.js/es/core.js",
+      "file": "highlight__js_lib_core.js",
+      "fileHash": "86b5eecf",
+      "needsInterop": false
+    },
+    "highlight.js/lib/languages/xml": {
+      "src": "../../../../node_modules/highlight.js/es/languages/xml.js",
+      "file": "highlight__js_lib_languages_xml.js",
+      "fileHash": "b1789f3a",
+      "needsInterop": false
+    },
+    "highlight.js/lib/languages/javascript": {
+      "src": "../../../../node_modules/highlight.js/es/languages/javascript.js",
+      "file": "highlight__js_lib_languages_javascript.js",
+      "fileHash": "b650e3fb",
+      "needsInterop": false
+    },
+    "highlight.js/lib/languages/typescript": {
+      "src": "../../../../node_modules/highlight.js/es/languages/typescript.js",
+      "file": "highlight__js_lib_languages_typescript.js",
+      "fileHash": "f4ad00c2",
+      "needsInterop": false
+    },
+    "highlight.js/lib/languages/json": {
+      "src": "../../../../node_modules/highlight.js/es/languages/json.js",
+      "file": "highlight__js_lib_languages_json.js",
+      "fileHash": "866f3226",
+      "needsInterop": false
+    },
+    "highlight.js/lib/languages/css": {
+      "src": "../../../../node_modules/highlight.js/es/languages/css.js",
+      "file": "highlight__js_lib_languages_css.js",
+      "fileHash": "0eda7aa4",
+      "needsInterop": false
+    },
+    "highlight.js/lib/languages/bash": {
+      "src": "../../../../node_modules/highlight.js/es/languages/bash.js",
+      "file": "highlight__js_lib_languages_bash.js",
+      "fileHash": "d3bdb4e0",
       "needsInterop": false
     }
   },

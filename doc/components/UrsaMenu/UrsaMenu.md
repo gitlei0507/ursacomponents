@@ -1,5 +1,8 @@
 ﻿<script setup>
 import BaseUrsaMenu from './BaseUrsaMenu.vue'
+import SourceCodeViewer from '../shared/SourceCodeViewer.vue'
+
+const loadBaseUrsaMenuSource = async () => (await import('./BaseUrsaMenu.vue?raw')).default
 </script>
 
 # UrsaMenu 菜单组件
@@ -10,17 +13,7 @@ import BaseUrsaMenu from './BaseUrsaMenu.vue'
 
 <BaseUrsaMenu />
 
-### 示例代码
-
-```vue
-<script setup>
-import BaseUrsaMenu from './BaseUrsaMenu.vue'
-</script>
-
-<template>
-  <BaseUrsaMenu />
-</template>
-```
+<SourceCodeViewer :load-source="loadBaseUrsaMenuSource" language="vue" />
 
 示例源码：`doc/components/UrsaMenu/BaseUrsaMenu.vue`
 

@@ -33,6 +33,7 @@
         "@element-plus/icons-vue": "^2.3.2",
         "@vitejs/plugin-vue": "^6.0.3",
         "element-plus": "^2.13.2",
+        "highlight.js": "^11.11.1",
         "vite": "^7.3.1",
         "vue": "^3.5.27",
         "vue-router": "^4.6.4"
