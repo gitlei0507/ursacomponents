@@ -1,56 +1,47 @@
 {
-  "hash": "3692b9a3",
-  "configHash": "904e2a48",
-  "lockfileHash": "6f612030",
-  "browserHash": "70f97917",
+  "hash": "06e15872",
+  "configHash": "d5fba758",
+  "lockfileHash": "8039393e",
+  "browserHash": "7fa971e2",
   "optimized": {
     "vue": {
       "src": "../../../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
       "file": "vue.js",
-      "fileHash": "3049b6fd",
+      "fileHash": "222758f7",
       "needsInterop": false
     },
     "vitepress > @vue/devtools-api": {
       "src": "../../../../node_modules/vitepress/node_modules/@vue/devtools-api/dist/index.js",
       "file": "vitepress___@vue_devtools-api.js",
-      "fileHash": "a50382d6",
+      "fileHash": "528e4897",
       "needsInterop": false
     },
     "vitepress > @vueuse/core": {
       "src": "../../../../node_modules/vitepress/node_modules/@vueuse/core/index.mjs",
       "file": "vitepress___@vueuse_core.js",
-      "fileHash": "1374f93f",
-      "needsInterop": false
-    },
-    "@theme/index": {
-      "src": "../../../../node_modules/vitepress/dist/client/theme-default/index.js",
-      "file": "@theme_index.js",
-      "fileHash": "9c63f00b",
-      "needsInterop": false
-    },
-    "@element-plus/icons-vue": {
-      "src": "../../../../node_modules/@element-plus/icons-vue/dist/index.js",
-      "file": "@element-plus_icons-vue.js",
-      "fileHash": "3ffd124e",
-      "needsInterop": false
-    },
-    "vue-router": {
-      "src": "../../../../node_modules/vue-router/dist/vue-router.mjs",
-      "file": "vue-router.js",
-      "fileHash": "f3111577",
+      "fileHash": "eeaf7347",
       "needsInterop": false
     },
     "element-plus": {
       "src": "../../../../node_modules/element-plus/es/index.mjs",
       "file": "element-plus.js",
-      "fileHash": "6ce812bc",
+      "fileHash": "6b02c08d",
+      "needsInterop": false
+    },
+    "@element-plus/icons-vue": {
+      "src": "../../../../node_modules/@element-plus/icons-vue/dist/index.js",
+      "file": "@element-plus_icons-vue.js",
+      "fileHash": "e98f3e4f",
+      "needsInterop": false
+    },
+    "vue-router": {
+      "src": "../../../../node_modules/vue-router/dist/vue-router.mjs",
+      "file": "vue-router.js",
+      "fileHash": "5e08526c",
       "needsInterop": false
     }
   },
   "chunks": {
-    "chunk-ERJKAEEQ": {
-      "file": "chunk-ERJKAEEQ.js"
-    },
     "chunk-N5D7TKLS": {
       "file": "chunk-N5D7TKLS.js"
     },
