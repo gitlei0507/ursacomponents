@@ -45,3 +45,14 @@
    ## 3. 流程图
 
 <ImagePreview src='./image/基于核心工具集Toolkit的路由生成与调用流程.png' alt='基于核心工具集Toolkit的路由生成与调用流程' />
+
+## 4. 核心方法说明
+
+| 方法                    | 说明                                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------------ |
+| `import.meta.glob`      | 扫描指定目录下页面组件，key：文件路径，value：组件懒加载函数                               |
+| `normalizeViewPath`     | 统一规范化页面组件路径                                                                     |
+| `createViewResolver`    | 根据页面组件路径获取组件懒加载函数                                                         |
+| `createMenuRouteMapper` | 构建路由对象，用于后续生成 route，内部调用了 `createViewResolver`                          |
+| `buildRoutesFromMenus`  | 对外暴露，将后台传递的菜单数据标准化后，转换成路由对象，内部调用了 `createMenuRouteMapper` |
+| `initDynamicRoutes`     | 对外暴露，生成 route 并挂载到 router，内部调用了 `buildRoutesFromMenus`                    |
